@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">AlarmChallenge</string>
+    <string name="minutes">Min : </string>
+    <string name="secondes">Sec : </string>
 </resources>
