@@ -27,6 +27,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.alarmchallenge.R
+import com.example.alarmchallenge.ui.theme.AlarmChallengeTheme
 
 @Composable
 fun ChronoLayout(gameViewModel: GameViewModel = viewModel()
@@ -43,7 +44,10 @@ fun ButtonLayout(
 @Composable
 fun TimeLayout(
     userMinutes: String,
+    userSeconds: String,
     updateMinutes : (String) -> Unit,
+    updateSeconds : (String) -> Unit,
+    onKeyboardDone: () -> Unit,
 ) {
     Row() {
         Text(
@@ -70,9 +74,27 @@ fun TimeLayout(
             )
         )
         Text(
-            text = stringResource(R.string.secondes),
+            text = stringResource(R.string.seconds),
             style = typography.titleMedium,
             color = colorScheme.onPrimary
+        )
+        OutlinedTextField(
+            value = userSeconds,
+            singleLine = true,
+            shape = shapes.small,
+            modifier = Modifier.fillMaxWidth(),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = colorScheme.surface,
+                unfocusedContainerColor = colorScheme.surface,
+                disabledContainerColor = colorScheme.surface,
+            ),
+            onValueChange = updateSeconds,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = { onKeyboardDone() }
+            )
         )
     }
 }
