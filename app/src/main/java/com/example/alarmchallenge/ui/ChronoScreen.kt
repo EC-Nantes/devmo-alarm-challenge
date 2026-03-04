@@ -19,10 +19,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CutCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -86,11 +85,27 @@ fun GameScreen(gameViewModel: GameViewModel = viewModel()) {
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        ButtonLayout()
+        ButtonLayout(
+            onClickStop = { gameViewModel.relaunchTimer() },
+            onClickRelaunch = { gameViewModel.relaunchTimer() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(mediumPadding)
+        )
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        TimeLayout()
+        TimeLayout(
+            userMinutes = gameViewModel.futureTimersBaseMinutesValue,
+            userSeconds = gameViewModel.futureTimersBaseSecondsValue,
+            updateMinutes = {gameViewModel.relaunchTimer()},
+            updateSeconds = {gameViewModel.relaunchTimer()},
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(mediumPadding)
+        )
     }
 }
 
@@ -135,7 +150,6 @@ fun TimeLayout(
     userSeconds: String,
     updateMinutes : (String) -> Unit,
     updateSeconds : (String) -> Unit,
-    onKeyboardDone: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row() {
@@ -158,9 +172,6 @@ fun TimeLayout(
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Done
             ),
-            keyboardActions = KeyboardActions(
-                onDone = { onKeyboardDone() }
-            )
         )
         Text(
             text = stringResource(R.string.seconds),
@@ -181,9 +192,6 @@ fun TimeLayout(
             keyboardOptions = KeyboardOptions.Default.copy(
                 imeAction = ImeAction.Done
             ),
-            keyboardActions = KeyboardActions(
-                onDone = { onKeyboardDone() }
-            )
         )
     }
 }
