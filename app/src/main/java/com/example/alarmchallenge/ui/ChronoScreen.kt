@@ -74,20 +74,22 @@ fun StartChronoScreen(
         Text(
             text = stringResource(R.string.app_name),
             style = typography.titleLarge,
+            fontSize = 30.sp,
         )
 
         // Adding a Spacer of height 20dp
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(80.dp))
 
         //Chrono displayed at the top
         Text(
             text =
-                gameUiState.currentTimerBaseMinutesValue.toString() + " : "
-                    + gameUiState.currentTimerBaseSecondsValue.toString(),
+                gameUiState.currentMinutes.toString() + " : "
+                    + gameUiState.currentSeconds.toString(),
             style = typography.titleLarge,
+            fontSize = 35.sp,
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(100.dp))
 
         ButtonLayout(
             onClickStop = { navigateToGame() },
@@ -98,13 +100,13 @@ fun StartChronoScreen(
                 .padding(mediumPadding)
         )
 
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(40.dp))
 
         TimeLayout(
             userMinutes = gameViewModel.futureTimersBaseMinutesValue,
             userSeconds = gameViewModel.futureTimersBaseSecondsValue,
-            updateMinutes = {gameViewModel.relaunchTimer()},
-            updateSeconds = {gameViewModel.relaunchTimer()},
+            updateMinutes = { gameViewModel.updateFutureMinutes(it) },
+            updateSeconds = { gameViewModel.updateFutureSeconds(it) },
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
@@ -122,26 +124,27 @@ fun ButtonLayout(
     Row() {
         Button(
             modifier = Modifier
-                .width(100.dp)
-                .height(100.dp),
+                .width(140.dp)
+                .height(140.dp),
             onClick = { onClickStop() },
             shape = CutCornerShape(16.dp),
         ) {
             Text(
                 text = stringResource(R.string.stop),
-                fontSize = 24.sp
+                fontSize = 20.sp
             )
         }
+        Spacer(modifier = Modifier.width(50.dp))
         OutlinedButton(
             modifier = Modifier
-                .width(100.dp)
-                .height(100.dp),
+                .width(140.dp)
+                .height(140.dp),
             onClick = { onClickRelaunch() },
             shape = CircleShape,
         ) {
             Text(
                 text = stringResource(R.string.relaunch),
-                fontSize = 24.sp
+                fontSize = 20.sp
             )
         }
     }
@@ -155,17 +158,21 @@ fun TimeLayout(
     updateSeconds : (String) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row() {
+    Row(
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Text(
             text = stringResource(R.string.minutes),
             style = typography.titleMedium,
-            color = colorScheme.onPrimary
+            textAlign = TextAlign.Center,
+            modifier = Modifier.weight(0.25f)
         )
         OutlinedTextField(
             value = userMinutes,
             singleLine = true,
             shape = shapes.small,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.weight(0.25f),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = colorScheme.surface,
                 unfocusedContainerColor = colorScheme.surface,
@@ -179,13 +186,14 @@ fun TimeLayout(
         Text(
             text = stringResource(R.string.seconds),
             style = typography.titleMedium,
-            color = colorScheme.onPrimary
+            textAlign = TextAlign.Center,
+            modifier = Modifier.weight(0.25f),
         )
         OutlinedTextField(
             value = userSeconds,
             singleLine = true,
             shape = shapes.small,
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier.weight(0.25f),
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = colorScheme.surface,
                 unfocusedContainerColor = colorScheme.surface,

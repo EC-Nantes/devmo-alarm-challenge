@@ -25,10 +25,10 @@ class GameViewModel : ViewModel() {
     var futureTimersBaseMinutesValue by mutableStateOf("0")
         private set
 
-    var currentSeconds by mutableStateOf("30")
-        private set
-    var currentMinutes by mutableStateOf("0")
-        private set
+    //var currentSeconds by mutableStateOf("30")
+    //    private set
+    //var currentMinutes by mutableStateOf("0")
+    //    private set
 
     init {
         relaunchTimer()
@@ -38,11 +38,11 @@ class GameViewModel : ViewModel() {
      * Re-initializes the game data to restart the game.
      */
     fun relaunchTimer() {
-        val seconds = futureTimersBaseSecondsValue.toIntOrNull() ?:30
-        val minutes = futureTimersBaseMinutesValue.toIntOrNull() ?:0
+        //val seconds = futureTimersBaseSecondsValue.toIntOrNull() ?:30
+        //val minutes = futureTimersBaseMinutesValue.toIntOrNull() ?:0
         _uiState.value = GameUiState(
-            currentTimerBaseSecondsValue = seconds,
-            currentTimerBaseMinutesValue = minutes,
+            currentTimerBaseSecondsValue = formatTimer(futureTimersBaseSecondsValue),
+            currentTimerBaseMinutesValue = formatTimer(futureTimersBaseMinutesValue),
             isTimerRunning = false,
         )
         updateCurrentTime(futureTimersBaseSecondsValue, futureTimersBaseMinutesValue)
@@ -52,8 +52,34 @@ class GameViewModel : ViewModel() {
      * Update the user's guess
      */
     fun updateCurrentTime(seconds: String, minutes: String){
-        currentSeconds = seconds
-        currentMinutes = minutes
+        _uiState.value.currentSeconds = formatTimer(seconds)
+        _uiState.value.currentMinutes = formatTimer(minutes)
+
+    }
+
+    fun formatTimer(chiffre : String) :String
+    {
+        return if (chiffre.length == 1) "0$chiffre" else chiffre
+    }
+
+    /*
+     * Update the user's guess
+     */
+    fun updateFutureMinutes(minutes: String){
+        var minutesInt = minutes.toIntOrNull() ?:0
+        if(minutesInt<0) minutesInt = 0
+        if(minutesInt>59) minutesInt = 59
+        futureTimersBaseMinutesValue = minutesInt.toString()
+    }
+
+    /*
+     * Update the user's guess
+     */
+    fun updateFutureSeconds(seconds: String){
+        var secondsInt = seconds.toIntOrNull() ?:0
+        if(secondsInt<0) secondsInt = 0
+        if(secondsInt>59) secondsInt = 59
+        futureTimersBaseSecondsValue = secondsInt.toString()
     }
 
     /*
