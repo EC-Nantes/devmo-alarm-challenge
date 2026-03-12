@@ -13,7 +13,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 
-import com.example.alarmchallenge.ui.GameScreen
 import com.example.alarmchallenge.ui.theme.AlarmChallengeTheme
 
 

@@ -34,6 +34,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.ComposeNavigator
 
 import com.example.alarmchallenge.ui.StartChronoScreen
+import com.example.alarmchallenge.ui.StartGameScreen
 
 /**
  * enum values that represent the screens in the app
@@ -42,37 +43,6 @@ enum class Screen(@StringRes val title: Int) {
     Chrono(title = R.string.chrono),
     Game(title = R.string.game)
 }
-
-//@Composable
-//fun AlarmChallengeNavBar(
-//    currentScreen: Screen,
-//    canNavigateBack: Boolean,
-//    navigateUp: () -> Unit,
-//    modifier: Modifier = Modifier
-//) {
-//    bottomBar = {
-//        NavigationBar(windowInsets = NavigationBarDefaults.windowInsets) {
-//            ComposeNavigator.Destination.entries.forEachIndexed { index, destination ->
-//                val selectedDestination = null
-//                NavigationBarItem(
-//                    selected = selectedDestination == index,
-//                    onClick = {
-//                        val navController = null
-//                        navController.navigate(route = destination.route)
-//                        selectedDestination = index
-//                    },
-//                    icon = {
-//                        Icon(
-//                            destination.icon,
-//                            contentDescription = destination.contentDescription
-//                        )
-//                    },
-//                    label = { Text(destination.label) }
-//                )
-//            }
-//        }
-//    }
-//}
 
 @Composable
 fun AlarmChallengeApp(
@@ -100,16 +70,13 @@ fun AlarmChallengeApp(
                     }
                 )
             }
-//            composable(route = Screen.Game.name) {
-//                StartGameScreen(
-//                    navigateToChrono = {
-//                        navController.navigate(Screen.Chrono.name)
-//                    },
-//                    modifier = Modifier
-//                        .fillMaxSize()
-//                        .padding(dimensionResource(R.dimen.padding_medium))
-//                )
-//            }
+            composable(route = Screen.Game.name) {
+                StartGameScreen(
+                    navigateToChrono = {
+                        navController.navigate(Screen.Chrono.name)
+                    }
+                )
+            }
         }
     }
 }
