@@ -15,6 +15,7 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -53,7 +54,10 @@ import com.example.alarmchallenge.R
 import com.example.alarmchallenge.ui.theme.AlarmChallengeTheme
 
 @Composable
-fun GameScreen(gameViewModel: GameViewModel = viewModel()) {
+fun StartChronoScreen(
+    gameViewModel: GameViewModel = viewModel(),
+    navigateToGame: () -> Unit,
+) {
     val gameUiState by gameViewModel.uiState.collectAsState()
     val mediumPadding = dimensionResource(R.dimen.padding_medium)
 
@@ -86,7 +90,7 @@ fun GameScreen(gameViewModel: GameViewModel = viewModel()) {
         Spacer(modifier = Modifier.height(20.dp))
 
         ButtonLayout(
-            onClickStop = { gameViewModel.relaunchTimer() },
+            onClickStop = { navigateToGame() },
             onClickRelaunch = { gameViewModel.relaunchTimer() },
             modifier = Modifier
                 .fillMaxWidth()
@@ -128,7 +132,6 @@ fun ButtonLayout(
                 fontSize = 24.sp
             )
         }
-
         OutlinedButton(
             modifier = Modifier
                 .width(100.dp)
