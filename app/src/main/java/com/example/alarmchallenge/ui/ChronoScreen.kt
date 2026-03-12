@@ -79,8 +79,8 @@ fun GameScreen(gameViewModel: GameViewModel = viewModel()) {
         //Chrono displayed at the top
         Text(
             text =
-                gameUiState.currentTimerBaseMinutesValue.toString() + " : "
-                    + gameUiState.currentTimerBaseSecondsValue.toString(),
+                gameUiState.currentMinutes.toString() + " : "
+                    + gameUiState.currentSeconds.toString(),
             style = typography.titleLarge,
             fontSize = 35.sp,
         )
@@ -101,8 +101,8 @@ fun GameScreen(gameViewModel: GameViewModel = viewModel()) {
         TimeLayout(
             userMinutes = gameViewModel.futureTimersBaseMinutesValue,
             userSeconds = gameViewModel.futureTimersBaseSecondsValue,
-            updateMinutes = {gameViewModel.relaunchTimer()},
-            updateSeconds = {gameViewModel.relaunchTimer()},
+            updateMinutes = { gameViewModel.updateFutureMinutes(it) },
+            updateSeconds = { gameViewModel.updateFutureSeconds(it) },
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
