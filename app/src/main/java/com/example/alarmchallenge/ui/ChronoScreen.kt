@@ -1,0 +1,217 @@
+package com.example.alarmchallenge.ui
+
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CutCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme.colorScheme
+import androidx.compose.material3.MaterialTheme.shapes
+import androidx.compose.material3.MaterialTheme.typography
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.dimensionResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+
+import androidx.compose.ui.unit.sp
+import com.example.alarmchallenge.R
+import kotlinx.coroutines.delay
+
+@Composable
+fun StartChronoScreen(
+    chronoViewModel: ChronoViewModel = viewModel(),
+    navigateToGame: () -> Unit,
+) {
+    val chronoUiState by chronoViewModel.uiState.collectAsState()
+    val mediumPadding = dimensionResource(R.dimen.padding_medium)
+
+    LaunchedEffect(key1 = chronoUiState.isTimerRunning) {
+        if (chronoUiState.isTimerRunning) {
+            while (chronoUiState.isTimerRunning) {
+                delay(1000L)
+                chronoViewModel.timer1Sec()
+            }
+        }
+        else
+            {
+                navigateToGame()
+            }
+    }
+
+    Column(
+        modifier = Modifier
+            .statusBarsPadding()
+            .verticalScroll(rememberScrollState())
+            .safeDrawingPadding()
+            .padding(mediumPadding),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+
+        Text(
+            text = stringResource(R.string.app_name),
+            style = typography.titleLarge,
+            fontSize = 30.sp,
+        )
+
+        // Adding a Spacer of height 20dp
+        Spacer(modifier = Modifier.height(80.dp))
+
+        //Chrono displayed at the top
+        Text(
+            text =
+                chronoUiState.currentMinutes.toString() + " : "
+                        + chronoUiState.currentSeconds.toString(),
+            style = typography.titleLarge,
+            fontSize = 35.sp,
+        )
+
+
+
+        Spacer(modifier = Modifier.height(100.dp))
+
+        ButtonLayout(
+            onClickStop = { navigateToGame() },
+            onClickRelaunch = { chronoViewModel.relaunchTimer() },
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(mediumPadding)
+        )
+
+        Spacer(modifier = Modifier.height(40.dp))
+
+        TimeLayout(
+            userMinutes = chronoViewModel.futureTimersBaseMinutesValue,
+            userSeconds = chronoViewModel.futureTimersBaseSecondsValue,
+            updateMinutes = { chronoViewModel.updateFutureMinutes(it) },
+            updateSeconds = { chronoViewModel.updateFutureSeconds(it) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(mediumPadding)
+        )
+    }
+}
+
+fun formatTime(seconds: Int): String {
+    val minutes = seconds / 60
+    val seconds = seconds % 60
+    return String.format("%02d:%02d", minutes, seconds)
+}
+
+@Composable
+fun ButtonLayout(
+    onClickStop : () -> Unit,
+    onClickRelaunch : () -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row() {
+        Button(
+            modifier = Modifier
+                .width(140.dp)
+                .height(140.dp),
+            onClick = { onClickStop() },
+            shape = CutCornerShape(16.dp),
+        ) {
+            Text(
+                text = stringResource(R.string.stop),
+                fontSize = 20.sp
+            )
+        }
+        Spacer(modifier = Modifier.width(50.dp))
+        OutlinedButton(
+            modifier = Modifier
+                .width(140.dp)
+                .height(140.dp),
+            onClick = { onClickRelaunch() },
+            shape = CircleShape,
+        ) {
+            Text(
+                text = stringResource(R.string.relaunch),
+                fontSize = 20.sp
+            )
+        }
+    }
+}
+
+@Composable
+fun TimeLayout(
+    userMinutes: String,
+    userSeconds: String,
+    updateMinutes : (String) -> Unit,
+    updateSeconds : (String) -> Unit,
+    modifier: Modifier = Modifier,
+) {
+    Row(
+        horizontalArrangement = Arrangement.SpaceEvenly,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = stringResource(R.string.minutes),
+            style = typography.titleMedium,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.weight(0.25f)
+        )
+        OutlinedTextField(
+            value = userMinutes,
+            singleLine = true,
+            shape = shapes.small,
+            modifier = Modifier.weight(0.25f),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = colorScheme.surface,
+                unfocusedContainerColor = colorScheme.surface,
+                disabledContainerColor = colorScheme.surface,
+            ),
+            onValueChange = updateMinutes,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Done
+            ),
+        )
+        Text(
+            text = stringResource(R.string.seconds),
+            style = typography.titleMedium,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.weight(0.25f),
+        )
+        OutlinedTextField(
+            value = userSeconds,
+            singleLine = true,
+            shape = shapes.small,
+            modifier = Modifier.weight(0.25f),
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = colorScheme.surface,
+                unfocusedContainerColor = colorScheme.surface,
+                disabledContainerColor = colorScheme.surface,
+            ),
+            onValueChange = updateSeconds,
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Done
+            ),
+        )
+    }
+}
