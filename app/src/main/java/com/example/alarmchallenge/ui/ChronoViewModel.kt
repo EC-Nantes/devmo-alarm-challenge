@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 /**
  * ViewModel containing the app data and methods to process the data
@@ -31,6 +32,7 @@ class ChronoViewModel : ViewModel() {
         relaunchTimer()
     }
 
+
     /*
      * Re-initializes the game data to restart the game.
      */
@@ -40,7 +42,7 @@ class ChronoViewModel : ViewModel() {
         _uiState.value = ChronoUiState(
             currentTimerBaseSecondsValue = formatTimer(futureTimersBaseSecondsValue),
             currentTimerBaseMinutesValue = formatTimer(futureTimersBaseMinutesValue),
-            isTimerRunning = false,
+            isTimerRunning = true,
         )
         updateCurrentTime(futureTimersBaseSecondsValue, futureTimersBaseMinutesValue)
     }
@@ -49,9 +51,33 @@ class ChronoViewModel : ViewModel() {
      * Update the user's guess
      */
     fun updateCurrentTime(seconds: String, minutes: String){
-        _uiState.value.currentSeconds = formatTimer(seconds)
-        _uiState.value.currentMinutes = formatTimer(minutes)
+        _uiState.update { currentState ->
+            currentState.copy(
+                currentSeconds = formatTimer(seconds),
+                currentMinutes = formatTimer(minutes)
+            )
+        }
 
+    }
+
+    fun timer1Sec() {
+        val seconds = _uiState.value.currentSeconds.toIntOrNull() ?: 0
+        val minutes = _uiState.value.currentMinutes.toIntOrNull() ?: 0
+
+        var secondsTotal = seconds + minutes * 60
+
+        if (secondsTotal > 0) {
+            secondsTotal -= 1
+        }
+        if (secondsTotal <= 0){
+            // Arrête la boucle LaunchedEffect quand on atteint 0
+            _uiState.update { it.copy(isTimerRunning = false) }
+        }
+
+        val newSeconds = secondsTotal % 60
+        val newMinutes = secondsTotal / 60
+
+        updateCurrentTime(newSeconds.toString(), newMinutes.toString())
     }
 
     fun formatTimer(chiffre : String) :String
@@ -102,10 +128,12 @@ class ChronoViewModel : ViewModel() {
 
             if(seconds==0 && minutes == 0)
             {
-                _uiState.value.isTimerRunning=false;
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        isTimerRunning = false,
+                    )
+                }
             }
         }
     }
 }
-
-
