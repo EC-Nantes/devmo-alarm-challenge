@@ -83,7 +83,7 @@ class GameViewModel : ViewModel() {
     }
 
     private fun updateGameState(updatedScore: Int) {
-        if (_uiState.value.score >= MAX_SCORE -1) {
+        if (updatedScore >= MAX_SCORE) {
             _uiState.update { currentState ->
                 currentState.copy(
                     isGuessedWordWrong = false,
