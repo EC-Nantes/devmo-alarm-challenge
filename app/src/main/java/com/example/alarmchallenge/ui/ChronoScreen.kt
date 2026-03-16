@@ -35,8 +35,11 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,6 +55,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.alarmchallenge.R
 import com.example.alarmchallenge.ui.theme.AlarmChallengeTheme
+import kotlinx.coroutines.delay
+import java.time.format.TextStyle
 
 @Composable
 fun StartChronoScreen(
@@ -60,6 +65,19 @@ fun StartChronoScreen(
 ) {
     val gameUiState by gameViewModel.uiState.collectAsState()
     val mediumPadding = dimensionResource(R.dimen.padding_medium)
+
+    LaunchedEffect(key1 = gameUiState.isTimerRunning) {
+        if (gameUiState.isTimerRunning) {
+            while (gameUiState.isTimerRunning) {
+                delay(1000L)
+                gameViewModel.timer1Sec()
+            }
+        }
+        else
+            {
+                navigateToGame()
+            }
+    }
 
     Column(
         modifier = Modifier
@@ -84,10 +102,12 @@ fun StartChronoScreen(
         Text(
             text =
                 gameUiState.currentMinutes.toString() + " : "
-                    + gameUiState.currentSeconds.toString(),
+                        + gameUiState.currentSeconds.toString(),
             style = typography.titleLarge,
             fontSize = 35.sp,
         )
+
+
 
         Spacer(modifier = Modifier.height(100.dp))
 
@@ -113,6 +133,12 @@ fun StartChronoScreen(
                 .padding(mediumPadding)
         )
     }
+}
+
+fun formatTime(seconds: Int): String {
+    val minutes = seconds / 60
+    val seconds = seconds % 60
+    return String.format("%02d:%02d", minutes, seconds)
 }
 
 @Composable

@@ -34,6 +34,7 @@ class GameViewModel : ViewModel() {
         relaunchTimer()
     }
 
+
     /*
      * Re-initializes the game data to restart the game.
      */
@@ -43,7 +44,7 @@ class GameViewModel : ViewModel() {
         _uiState.value = GameUiState(
             currentTimerBaseSecondsValue = formatTimer(futureTimersBaseSecondsValue),
             currentTimerBaseMinutesValue = formatTimer(futureTimersBaseMinutesValue),
-            isTimerRunning = false,
+            isTimerRunning = true,
         )
         updateCurrentTime(futureTimersBaseSecondsValue, futureTimersBaseMinutesValue)
     }
@@ -52,9 +53,33 @@ class GameViewModel : ViewModel() {
      * Update the user's guess
      */
     fun updateCurrentTime(seconds: String, minutes: String){
-        _uiState.value.currentSeconds = formatTimer(seconds)
-        _uiState.value.currentMinutes = formatTimer(minutes)
+        _uiState.update { currentState ->
+            currentState.copy(
+                currentSeconds = formatTimer(seconds),
+                currentMinutes = formatTimer(minutes)
+            )
+        }
 
+    }
+
+    fun timer1Sec() {
+        val seconds = _uiState.value.currentSeconds.toIntOrNull() ?: 0
+        val minutes = _uiState.value.currentMinutes.toIntOrNull() ?: 0
+
+        var secondsTotal = seconds + minutes * 60
+
+        if (secondsTotal > 0) {
+            secondsTotal -= 1
+        }
+        if (secondsTotal <= 0){
+            // Arrête la boucle LaunchedEffect quand on atteint 0
+            _uiState.update { it.copy(isTimerRunning = false) }
+        }
+
+        val newSeconds = secondsTotal % 60
+        val newMinutes = secondsTotal / 60
+
+        updateCurrentTime(newSeconds.toString(), newMinutes.toString())
     }
 
     fun formatTimer(chiffre : String) :String
@@ -105,7 +130,11 @@ class GameViewModel : ViewModel() {
 
             if(seconds==0 && minutes == 0)
             {
-                _uiState.value.isTimerRunning=false;
+                _uiState.update { currentState ->
+                    currentState.copy(
+                        isTimerRunning = false,
+                    )
+                }
             }
         }
     }

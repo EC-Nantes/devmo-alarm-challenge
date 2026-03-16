@@ -32,6 +32,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.ComposeNavigator
+import com.example.alarmchallenge.ui.GameViewModel
 
 import com.example.alarmchallenge.ui.StartChronoScreen
 import com.example.alarmchallenge.ui.StartGameScreen
@@ -46,6 +47,7 @@ enum class Screen(@StringRes val title: Int) {
 
 @Composable
 fun AlarmChallengeApp(
+    gameViewModel: GameViewModel = viewModel(),
     navController: NavHostController = rememberNavController()
 ) {
     // Get current back stack entry
