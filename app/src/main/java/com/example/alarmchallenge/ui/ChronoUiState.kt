@@ -8,9 +8,8 @@ data class ChronoUiState(
         val currentTimerBaseMinutesValue: String = "0",
 
 
-        var currentMinutes: String = "30",
-        var currentSeconds: String = "0",
+        val currentMinutes: String = "30",
+        val currentSeconds: String = "0",
 
-        var isTimerRunning: Boolean = true
+        val isTimerRunning: Boolean = true
 )
-
