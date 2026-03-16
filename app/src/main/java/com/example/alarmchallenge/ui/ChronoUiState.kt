@@ -3,7 +3,7 @@ package com.example.alarmchallenge.ui;
 /**
  * Data class that represents the game UI state
  */
-data class GameUiState(
+data class ChronoUiState(
         val currentTimerBaseSecondsValue: String = "30",
         val currentTimerBaseMinutesValue: String = "0",
 

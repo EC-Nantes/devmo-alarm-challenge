@@ -1,11 +1,9 @@
 package com.example.alarmchallenge.ui;
 
-import androidx.annotation.StringRes
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import com.example.alarmchallenge.R
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,11 +12,11 @@ import kotlinx.coroutines.flow.update
 /**
  * ViewModel containing the app data and methods to process the data
  */
-class GameViewModel : ViewModel() {
+class ChronoViewModel : ViewModel() {
 
     // Game UI state
-    private val _uiState = MutableStateFlow(GameUiState())
-    val uiState: StateFlow<GameUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(ChronoUiState())
+    val uiState: StateFlow<ChronoUiState> = _uiState.asStateFlow()
 
     var futureTimersBaseSecondsValue by mutableStateOf("30")
         private set
@@ -41,7 +39,7 @@ class GameViewModel : ViewModel() {
     fun relaunchTimer() {
         //val seconds = futureTimersBaseSecondsValue.toIntOrNull() ?:30
         //val minutes = futureTimersBaseMinutesValue.toIntOrNull() ?:0
-        _uiState.value = GameUiState(
+        _uiState.value = ChronoUiState(
             currentTimerBaseSecondsValue = formatTimer(futureTimersBaseSecondsValue),
             currentTimerBaseMinutesValue = formatTimer(futureTimersBaseMinutesValue),
             isTimerRunning = true,
