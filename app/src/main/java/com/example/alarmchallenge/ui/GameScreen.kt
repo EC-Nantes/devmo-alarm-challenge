@@ -54,6 +54,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.alarmchallenge.R
 import com.example.alarmchallenge.ui.GameViewModel
 import com.example.alarmchallenge.ui.theme.AlarmChallengeTheme
@@ -64,7 +65,7 @@ fun StartGameScreen(
     gameViewModel: GameViewModel = viewModel(),
     navigateToChrono: () -> Unit
 ) {
-    val gameUiState by chronoViewModel.uiState.collectAsState()
+    val gameUiState by gameViewModel.uiState.collectAsState()
     val mediumPadding = dimensionResource(R.dimen.padding_medium)
 
     Column(

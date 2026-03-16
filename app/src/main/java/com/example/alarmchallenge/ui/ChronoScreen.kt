@@ -25,7 +25,6 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -39,7 +38,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 
 import androidx.compose.ui.unit.sp
 import com.example.alarmchallenge.R
-import kotlinx.coroutines.delay
 
 @Composable
 fun StartChronoScreen(
@@ -48,19 +46,6 @@ fun StartChronoScreen(
 ) {
     val chronoUiState by chronoViewModel.uiState.collectAsState()
     val mediumPadding = dimensionResource(R.dimen.padding_medium)
-
-    LaunchedEffect(key1 = chronoUiState.isTimerRunning) {
-        if (chronoUiState.isTimerRunning) {
-            while (chronoUiState.isTimerRunning) {
-                delay(1000L)
-                chronoViewModel.timer1Sec()
-            }
-        }
-        else
-            {
-                navigateToGame()
-            }
-    }
 
     Column(
         modifier = Modifier
@@ -85,12 +70,10 @@ fun StartChronoScreen(
         Text(
             text =
                 chronoUiState.currentMinutes.toString() + " : "
-                        + chronoUiState.currentSeconds.toString(),
+                    + chronoUiState.currentSeconds.toString(),
             style = typography.titleLarge,
             fontSize = 35.sp,
         )
-
-
 
         Spacer(modifier = Modifier.height(100.dp))
 
@@ -116,12 +99,6 @@ fun StartChronoScreen(
                 .padding(mediumPadding)
         )
     }
-}
-
-fun formatTime(seconds: Int): String {
-    val minutes = seconds / 60
-    val seconds = seconds % 60
-    return String.format("%02d:%02d", minutes, seconds)
 }
 
 @Composable
