@@ -44,7 +44,7 @@ fun StartChronoScreen(
     chronoViewModel: ChronoViewModel = viewModel(),
     navigateToGame: () -> Unit,
 ) {
-    val gameUiState by chronoViewModel.uiState.collectAsState()
+    val chronoUiState by chronoViewModel.uiState.collectAsState()
     val mediumPadding = dimensionResource(R.dimen.padding_medium)
 
     Column(
@@ -69,8 +69,8 @@ fun StartChronoScreen(
         //Chrono displayed at the top
         Text(
             text =
-                gameUiState.currentMinutes.toString() + " : "
-                    + gameUiState.currentSeconds.toString(),
+                chronoUiState.currentMinutes.toString() + " : "
+                    + chronoUiState.currentSeconds.toString(),
             style = typography.titleLarge,
             fontSize = 35.sp,
         )

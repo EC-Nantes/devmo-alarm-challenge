@@ -6,8 +6,12 @@
     <string name="relaunch">Relaunch</string>
     <string name="chrono">Chrono screen</string>
     <string name="game">Game screen</string>
-    <string name="quiz">Vous notez combien sur /20 pour ce TP ?</string>
-    <string name="wrong_guess">Wrong guess..</string>
-    <string name="enter_the_note">Give me more</string>
-    <string name="submit">submit</string>
+
+    <string name="game_name">Capital guesser</string>
+    <string name="instructions">Guess three capitals !</string>
+    <string name="skip">Skip</string>
+    <string name="submit">Submit</string>
+    <string name="score">Score: %d</string>
+    <string name="enter_your_word">Enter capital name</string>
+    <string name="wrong_guess">Wrong Guess!</string>
 </resources>

@@ -25,76 +25,65 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
+import com.example.alarmchallenge.data.MAX_SCORE
+import com.example.alarmchallenge.data.allCountry
+
 /**
  * ViewModel containing the app data and methods to process the data
  */
 class GameViewModel : ViewModel() {
 
-    // Game UI state
     private val _uiState = MutableStateFlow(GameUiState())
     val uiState: StateFlow<GameUiState> = _uiState.asStateFlow()
 
     var userGuess by mutableStateOf("")
         private set
 
-    // Set of words used in the game
-    private var usedWords: MutableSet<String> = mutableSetOf()
-    private lateinit var currentWord: String
+    private var usedCountries: MutableSet<String> = mutableSetOf()
+
+    private lateinit var currentCountry: String
+    private lateinit var currentCapital: String
 
     init {
         resetGame()
     }
 
-    /*
-     * Re-initializes the game data to restart the game.
-     */
     fun resetGame() {
-        usedWords.clear()
-        _uiState.value = GameUiState(currentScrambledWord = pickRandomWordAndShuffle())
+        usedCountries.clear()
+        val firstCountry = pickNewCountryAndCapital()
+        _uiState.value = GameUiState(
+            currentScrambledWord = firstCountry,
+            currentWordCount = 1,
+            score = 0,
+            isGameOver = false,
+            isGuessedWordWrong = false
+        )
+        updateUserGuess("")
     }
 
-    /*
-     * Update the user's guess
-     */
-    fun updateUserGuess(guessedWord: String){
+    fun updateUserGuess(guessedWord: String) {
         userGuess = guessedWord
     }
 
-    /*
-     * Checks if the user's guess is correct.
-     * Increases the score accordingly.
-     */
     fun checkUserGuess() {
-        if (userGuess.equals(currentWord, ignoreCase = true)) {
-            // User's guess is correct, increase the score
-            // and call updateGameState() to prepare the game for next round
-
+        if (userGuess.trim().equals(currentCapital, ignoreCase = true)) {
+            val updatedScore = _uiState.value.score + 1
+            updateGameState(updatedScore)
         } else {
-            // User's guess is wrong, show an error
             _uiState.update { currentState ->
                 currentState.copy(isGuessedWordWrong = true)
             }
         }
-        // Reset user guess
         updateUserGuess("")
     }
 
-    /*
-     * Skip to next word
-     */
     fun skipWord() {
         updateGameState(_uiState.value.score)
-        // Reset user guess
         updateUserGuess("")
     }
 
-    /*
-     * Picks a new currentWord and currentScrambledWord and updates UiState according to
-     * current game state.
-     */
     private fun updateGameState(updatedScore: Int) {
-        if (usedWords.size == MAX_NO_OF_WORDS){
-            //Last round in the game, update isGameOver to true, don't pick a new word
+        if (_uiState.value.score >= MAX_SCORE -1) {
             _uiState.update { currentState ->
                 currentState.copy(
                     isGuessedWordWrong = false,
@@ -102,12 +91,12 @@ class GameViewModel : ViewModel() {
                     isGameOver = true
                 )
             }
-        } else{
-            // Normal round in the game
+        } else {
+            val nextCountry = pickNewCountryAndCapital()
             _uiState.update { currentState ->
                 currentState.copy(
                     isGuessedWordWrong = false,
-                    currentScrambledWord = pickRandomWordAndShuffle(),
+                    currentScrambledWord = nextCountry,
                     currentWordCount = currentState.currentWordCount.inc(),
                     score = updatedScore
                 )
@@ -115,24 +104,16 @@ class GameViewModel : ViewModel() {
         }
     }
 
-    private fun shuffleCurrentWord(word: String): String {
-        val tempWord = word.toCharArray()
-        // Scramble the word
-        tempWord.shuffle()
-        while (String(tempWord) == word) {
-            tempWord.shuffle()
-        }
-        return String(tempWord)
-    }
+    private fun pickNewCountryAndCapital(): String {
+        val randomCountry = allCountry.keys.random()
 
-    private fun pickRandomWordAndShuffle(): String {
-        // Continue picking up a new random word until you get one that hasn't been used before
-        currentWord = allWords.random()
-        return if (usedWords.contains(currentWord)) {
-            pickRandomWordAndShuffle()
+        return if (usedCountries.contains(randomCountry)) {
+            pickNewCountryAndCapital()
         } else {
-            usedWords.add(currentWord)
-            shuffleCurrentWord(currentWord)
+            usedCountries.add(randomCountry)
+            currentCountry = randomCountry
+            currentCapital = allCountry[randomCountry] ?: ""
+            currentCountry
         }
     }
 }
